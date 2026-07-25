@@ -12,6 +12,8 @@ public abstract class FinancingModel {
     private AmortizationType amortizationType;
     private FinancingStatus status;
     protected int userId;
+    private BigDecimal installmentAmount;
+    private BigDecimal totalAmountPaid;
 
     public FinancingModel(
             BigDecimal financedAmount,
@@ -63,5 +65,21 @@ public abstract class FinancingModel {
 
     public void setFinancingId(Integer financingId) {
         this.financingId = financingId;
+    }
+
+    public BigDecimal getInstallmentAmount() {
+        return this.installmentAmount;
+    }
+
+    public void setInstallmentAmount(BigDecimal installmentAmount) {
+        this.installmentAmount = installmentAmount;
+    }
+
+    public BigDecimal getTotalAmountPaid() {
+        return this.totalAmountPaid;
+    }
+
+    public void setTotalAmountPaid(BigDecimal totalAmountPaid) {
+        this.totalAmountPaid = totalAmountPaid;
     }
 }

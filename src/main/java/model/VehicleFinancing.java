@@ -12,8 +12,6 @@ public class VehicleFinancing extends FinancingModel {
     private String model;
     private Integer manufactureYear;
     private Integer mileage; // Only applicable when vehicleCondition == USED
-    private BigDecimal installmentAmount;
-    private BigDecimal totalAmountPaid;
 
     public VehicleFinancing(
             BigDecimal financedAmount,
@@ -61,8 +59,6 @@ public class VehicleFinancing extends FinancingModel {
     public void setModel(String model) { this.model = model; }
     public void setManufactureYear(Integer manufactureYear) { this.manufactureYear = manufactureYear; }
     public void setMileage(Integer mileage) { this.mileage = mileage; }
-    public void setInstallmentAmount(BigDecimal installmentAmount) { this.installmentAmount = installmentAmount; }
-    public void setTotalAmountPaid(BigDecimal totalAmountPaid) { this.totalAmountPaid = totalAmountPaid; }
 
     @Override
     public String toString() {
@@ -79,6 +75,8 @@ public class VehicleFinancing extends FinancingModel {
                         "Financed Amount: R$ %.2f%n" +
                         "Loan Term: %d months%n" +
                         "Annual Interest Rate: %.2f%%%n" +
+                        "Installment Amount: R$ %.2f%n" +
+                        "Total Amount Paid: R$ %.2f%n" +
                         "Mileage: %d km%n" +
                         "===================================%n",
                 getFinancingId(),
@@ -90,6 +88,8 @@ public class VehicleFinancing extends FinancingModel {
                 (getFinancedAmount() != null ? getFinancedAmount().doubleValue() : 0.0),
                 getLoanTermInMonths(),
                 (getAnnualInterestRate() != null ? getAnnualInterestRate().doubleValue() : 0.0),
+                (getInstallmentAmount() != null ? getInstallmentAmount().doubleValue() : 0.0),
+                (getTotalAmountPaid() != null ? getTotalAmountPaid().doubleValue() : 0.0),
                 (getMileage() != null ? getMileage() : 0)
         );
     }

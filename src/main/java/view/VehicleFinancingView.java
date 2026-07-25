@@ -143,6 +143,8 @@ public class VehicleFinancingView {
             System.out.printf("Financed value: R$ %.2f%n", financing.getFinancedAmount());
             System.out.printf("Loan term in months: %d months%n", financing.getLoanTermInMonths());
             System.out.printf("Annual interest rate: %.2f%%%n", financing.getAnnualInterestRate());
+            System.out.printf("Installment amount: R$ %.2f%n", financing.getInstallmentAmount()); // temporary solution
+            System.out.printf("Total amount paid: R$ %.2f%n", financing.getTotalAmountPaid()); // temporary solution
             System.out.printf("Amortization type: %s%n", financing.getAmortizationType());
             System.out.printf("Vehicle type: %s%n", financing.getVehicleType());
             System.out.printf("Vehicle condition: %s%n", financing.getVehicleCondition());

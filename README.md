@@ -1,16 +1,14 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9 BETA - 2026-07-22
+# Java financing system | v1.9.1 BETA - 2026-07-24
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9 - 2026-07-22
+## Changelog - v1.9.1 - 2026-07-24
 ### Upgrades and Fixes:
-- New type of financing added and implemented all along the system: Vehicle financing. 
+- Fixed normalize and validate methods order on service layer
 
-- User-friendly message when displaying a simulated financing.
-
-- SQL Schema updated to include the new financing type.
+- New amortization calculator class in the util package for better organization and less code repetition
 
 ---
 
@@ -82,8 +80,18 @@ export DB_PASSWORD="your_password"**
 
 **Next steps for the project:**
 
-1: Finish the 2.0 VERSION of the project, this includes:
-- Create methods for scanners and loops
-- Implementate a proper logging framework for better debugging and error tracking
 
-2: Total migration of the project to Spring Boot
+## Next Steps
+
+- Reorganize financing display logic 
+- Extract generic loop/menu methods (shared across views)
+- Stop re-instantiating services on every MainMenuView loop iteration
+- Add a `CANCELED` enum status
+- Add unit tests 
+- Add Javadocs back for 2.0
+- Implement a proper logging framework 
+
+**Other:**
+- Add a LICENSE file
+- Use multi-catch (`|`) in views where `IllegalArgumentException`/`IllegalStateException` share the same catch body
+- Total migration of the project to Spring Boot

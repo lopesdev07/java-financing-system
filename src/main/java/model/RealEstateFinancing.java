@@ -15,8 +15,6 @@ public class RealEstateFinancing extends FinancingModel {
     private BigDecimal condominiumFee;
     private String zoning;
     private PropertyCondition propertyCondition;
-    private BigDecimal installmentAmount;
-    private BigDecimal totalAmountPaid;
 
     public RealEstateFinancing(
             BigDecimal financedAmount,
@@ -149,7 +147,9 @@ public class RealEstateFinancing extends FinancingModel {
                         "Financing Status: %s%n" +
                         "Financed Amount: R$ %.2f%n" +
                         "Loan Term: %d months%n" +
-                        "Annual Interest Rate: %.2f%%%n%n" +
+                        "Annual Interest Rate: %.2f%%%n" +
+                        "Installment Amount: R$ %.2f%n" +
+                        "Total Amount Paid: R$ %.2f%n%n" +
                         "--- Property Information ---%n" +
                         "Bedrooms: %d%n" +
                         "Parking Spaces: %d%n" +
@@ -166,6 +166,8 @@ public class RealEstateFinancing extends FinancingModel {
                 (getFinancedAmount() != null ? getFinancedAmount().doubleValue() : 0.0),
                 getLoanTermInMonths(),
                 (getAnnualInterestRate() != null ? getAnnualInterestRate().doubleValue() : 0.0),
+                (getInstallmentAmount() != null ? getInstallmentAmount().doubleValue() : 0.0),
+                (getTotalAmountPaid() != null ? getTotalAmountPaid().doubleValue() : 0.0),
                 (getBedrooms() != null ? getBedrooms() : 0),
                 (getParkingSpaces() != null ? getParkingSpaces() : 0),
                 (getLandArea() != null ? getLandArea().doubleValue() : 0.0),
@@ -174,13 +176,5 @@ public class RealEstateFinancing extends FinancingModel {
                 (getCondominiumFee() != null ? getCondominiumFee().doubleValue() : 0.0),
                 getZoning()
         );
-    }
-
-    public void setInstallmentAmount(BigDecimal installmentAmount) {
-        this.installmentAmount = installmentAmount;
-    }
-
-    public void setTotalAmountPaid(BigDecimal totalAmountPaid) {
-        this.totalAmountPaid = totalAmountPaid;
     }
 }
