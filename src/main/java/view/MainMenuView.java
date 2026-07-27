@@ -11,13 +11,14 @@ import java.util.Scanner;
 
 public class MainMenuView {
 
+
     public void displayMainMenu(Scanner scanner) {
+        RealEstateFinancingView menu = new RealEstateFinancingView(new RealEstateFinancingService(new RealEstateFinancingRepository()));
+        VehicleFinancingView vehicleMenu = new VehicleFinancingView(new VehicleFinancingService(new VehicleFinancingRepository()));
         boolean exit = false;
         while (!exit) {
 
             try {
-                RealEstateFinancingView menu = new RealEstateFinancingView(new RealEstateFinancingService(new RealEstateFinancingRepository()));
-                VehicleFinancingView vehicleMenu = new VehicleFinancingView(new VehicleFinancingService(new VehicleFinancingRepository()));
                 System.out.println("--- Main Menu ---");
                 System.out.println("Welcome to the Financing Management System.");
                 System.out.println("Choose the option that determines which financing type you want to manage: ");

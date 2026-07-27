@@ -4,6 +4,7 @@ import exceptions.InvalidDownPaymentException;
 import exceptions.FinancingNotFoundException;
 import model.*;
 import service.RealEstateFinancingService;
+import util.LoopUtil;
 import util.ScannerUtil;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -24,11 +25,12 @@ public class RealEstateFinancingView {
         System.out.println("3. Return to Main Menu");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 3);
         switch (option) {
             case 1 -> simulationMenu(scanner);
             case 2 -> managementMenu(scanner);
             case 3 -> System.out.println("Returning to the main menu...");
-            default -> System.out.println("Invalid option. Please try again.");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         }
     }
 
@@ -41,12 +43,13 @@ public class RealEstateFinancingView {
         System.out.println("4. Return to Main Menu");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 4);
         switch (option) {
             case 1 -> viewRealEstateFinancings();
             case 2 -> editRealEstateFinancing(scanner);
             case 3 -> viewRealEstateFinancingDetails(scanner);
             case 4 -> System.out.println("Returning to the main menu...");
-            default -> System.out.println("Invalid option. Please try again.");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         }
     }
 
@@ -126,6 +129,7 @@ public class RealEstateFinancingView {
                 floor = ScannerUtil.intScanner(scanner);
                 System.out.printf("(Current: %s) Has elevator? (1 for Yes, 2 for No): ", oldFin.hasElevator() != null && oldFin.hasElevator() ? "Yes" : "No");
                 int hasElevator = ScannerUtil.intScanner(scanner);
+                hasElevator = LoopUtil.getValidOption(scanner, hasElevator, 1, 2);
                 elevator = hasElevator == 1;
                 System.out.printf("(Current: R$ %.2f) Condominium value: ", oldFin.getCondominiumFee());
                 condominiumValue = ScannerUtil.bigDecimalScanner(scanner);
@@ -201,14 +205,13 @@ public class RealEstateFinancingView {
         System.out.println("Do you wish to save this simulation? Type 1 for yes or 2 for no.");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int answer = ScannerUtil.intScanner(scanner);
+        answer = LoopUtil.getValidOption(scanner, answer, 1, 2);
         try {
             if (answer == 1) {
                 service.saveCurrentFinancing();
                 System.out.println("Simulation saved successfully!");
-            } else if (answer == 2) {
-                System.out.println("Simulation not saved.");
             } else {
-                System.out.println("Invalid option. Type 1 to save or 2 to not save..");
+                System.out.println("Simulation not saved.");
             }
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
@@ -256,14 +259,8 @@ public class RealEstateFinancingView {
                 floor = ScannerUtil.intScanner(scanner);
                 System.out.print("Has elevator? (1 for Yes, 2 for No): ");
                 int hasElevator = ScannerUtil.intScanner(scanner);
-                if (hasElevator == 1) {
-                    elevator = true;
-                } else if (hasElevator == 2) {
-                    elevator = false;
-                } else {
-                    System.out.println("Invalid option. Considering the default value (No elevator).");
-                    elevator = false;
-                }
+                hasElevator = LoopUtil.getValidOption(scanner, hasElevator, 1, 2);
+                elevator = hasElevator == 1;
                 System.out.print("Condominium value: ");
                 condominiumValue = ScannerUtil.bigDecimalScanner(scanner);
             }
@@ -294,10 +291,11 @@ public class RealEstateFinancingView {
         System.out.println("2 - PRICE");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 2);
         return switch (option) {
             case 1 -> AmortizationType.SAC;
             case 2 -> AmortizationType.PRICE;
-            default -> throw new IllegalArgumentException("Invalid option");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         };
     }
 
@@ -308,11 +306,12 @@ public class RealEstateFinancingView {
         System.out.println("3 - Land");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 3);
         return switch (option) {
             case 1 -> PropertyType.HOUSE;
             case 2 -> PropertyType.APARTMENT;
             case 3 -> PropertyType.LAND;
-            default -> throw new IllegalArgumentException("Invalid option");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         };
     }
 
@@ -322,10 +321,11 @@ public class RealEstateFinancingView {
         System.out.println("2 - Second-hand");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 2);
         return switch (option) {
             case 1 -> PropertyCondition.NEW;
             case 2 -> PropertyCondition.SECOND_HAND;
-            default -> throw new IllegalArgumentException("Invalid option. Please choose 1 for New or 2 for Second-hand.");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         };
     }
 

@@ -4,6 +4,7 @@ import exceptions.InvalidVehicleDownPaymentException;
 import exceptions.FinancingNotFoundException;
 import model.*;
 import service.VehicleFinancingService;
+import util.LoopUtil;
 import util.ScannerUtil;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -24,11 +25,12 @@ public class VehicleFinancingView {
         System.out.println("3. Return to Main Menu");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 3);
         switch (option) {
             case 1 -> simulationMenu(scanner);
             case 2 -> managementMenu(scanner);
             case 3 -> System.out.println("Returning to the main menu...");
-            default -> System.out.println("Invalid option. Please try again.");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         }
     }
 
@@ -41,12 +43,13 @@ public class VehicleFinancingView {
         System.out.println("4. Return to Main Menu");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 4);
         switch (option) {
             case 1 -> viewVehicleFinancings();
             case 2 -> editVehicleFinancing(scanner);
             case 3 -> viewVehicleFinancingDetails(scanner);
             case 4 -> System.out.println("Returning to the main menu...");
-            default -> System.out.println("Invalid option. Please try again.");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         }
     }
 
@@ -175,14 +178,13 @@ public class VehicleFinancingView {
         System.out.println("Do you wish to save this simulation? Type 1 for yes or 2 for no.");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int answer = ScannerUtil.intScanner(scanner);
+        answer = LoopUtil.getValidOption(scanner, answer, 1, 2);
         try {
             if (answer == 1) {
                 service.saveCurrentFinancing();
                 System.out.println("Simulation saved successfully!");
-            } else if (answer == 2) {
-                System.out.println("Simulation not saved.");
             } else {
-                System.out.println("Invalid option. Type 1 to save or 2 to not save..");
+                System.out.println("Simulation not saved.");
             }
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
@@ -241,10 +243,11 @@ public class VehicleFinancingView {
         System.out.println("2 - PRICE");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 2);
         return switch (option) {
             case 1 -> AmortizationType.SAC;
             case 2 -> AmortizationType.PRICE;
-            default -> throw new IllegalArgumentException("Invalid option");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         };
     }
 
@@ -255,11 +258,12 @@ public class VehicleFinancingView {
         System.out.println("3 - Truck");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 3);
         return switch (option) {
             case 1 -> VehicleType.CAR;
             case 2 -> VehicleType.MOTORCYCLE;
             case 3 -> VehicleType.TRUCK;
-            default -> throw new IllegalArgumentException("Invalid option");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         };
     }
 
@@ -269,10 +273,11 @@ public class VehicleFinancingView {
         System.out.println("2 - Used");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
+        option = LoopUtil.getValidOption(scanner, option, 1, 2);
         return switch (option) {
             case 1 -> VehicleCondition.NEW;
             case 2 -> VehicleCondition.USED;
-            default -> throw new IllegalArgumentException("Invalid option. Please choose 1 for New or 2 for Used.");
+            default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
         };
     }
 

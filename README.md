@@ -1,15 +1,14 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.1 BETA - 2026-07-24
+# Java financing system | v1.9.2 BETA - 2026-07-27
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.1 - 2026-07-24
+## Changelog - v1.9.2 - 2026-07-27
 ### Upgrades and Fixes:
-- Fixed normalize and validate methods order on service layer
+- Fixed a bug where the findbyid method on both financing repositories were "creating" a user_id by getting the session user id instead of checking the financing's user_id. This caused a bug where users could see/edit financings that were not theirs. Now the method checks the financing's user_id and compares it to the session user id, returning null if they don't match and using a double.
 
-- New amortization calculator class in the util package for better organization and less code repetition
-
+- Created LoopUtil class to handle loops in the views, reducing code repetition and improving maintainability.
 ---
 
 ## Utilized Technologies
