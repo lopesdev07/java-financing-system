@@ -113,15 +113,17 @@ public class RealEstateFinancingRepository {
                  floor,
                  elevator,
                  condominium_fee,
-                 zoning
+                 zoning,
+                 user_id
           FROM realestate_financing
-          WHERE financing_id = ?
+          WHERE financing_id = ? AND user_id = ?
            \s""";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, financingId);
+            stmt.setInt(2, Session.getUserId());
 
             try (ResultSet rs = stmt.executeQuery()) {
 
@@ -145,7 +147,7 @@ public class RealEstateFinancingRepository {
                             rs.getObject("elevator", Boolean.class),
                             rs.getBigDecimal("condominium_fee"),
                             rs.getString("zoning"),
-                            Session.getUserId()
+                            rs.getInt("user_id")
                     );
 
                     financing.setFinancingId(rs.getInt("financing_id"));

@@ -116,15 +116,17 @@ public class VehicleFinancingRepository {
                  brand,
                  model,
                  manufacture_year,
-                 mileage
+                 mileage,
+                 user_id
           FROM vehicle_financing
-          WHERE financing_id = ?
+          WHERE financing_id = ? AND user_id = ?
            \s""";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, financingId);
+            stmt.setInt(2, Session.getUserId());
 
             try (ResultSet rs = stmt.executeQuery()) {
 
@@ -147,7 +149,7 @@ public class VehicleFinancingRepository {
                             rs.getString("model"),
                             rs.getObject("manufacture_year", Integer.class),
                             rs.getObject("mileage", Integer.class),
-                            Session.getUserId()
+                            rs.getInt("user_id")
                     );
 
                     financing.setFinancingId(rs.getInt("financing_id"));
