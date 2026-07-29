@@ -62,35 +62,24 @@ public class VehicleFinancing extends FinancingModel {
 
     @Override
     public String toString() {
-        return String.format(
-                "===== VEHICLE FINANCING =====%n" +
-                        "Financing ID: %d%n" +
-                        "Vehicle: %s %s (%d)%n" +
-                        "Vehicle Type: %s%n" +
-                        "Condition: %s%n" +
-                        "Amortization Type: %s%n%n" +
+        StringBuilder sb = new StringBuilder();
+        sb.append("---- VEHICLE FINANCING ----\n");
+        sb.append("Financing ID: ").append(getFinancingId()).append("\n");
+        sb.append("Vehicle: ").append(getBrand()).append(" ").append(getModel())
+                .append(" (").append(getManufactureYear()).append(")\n");
+        sb.append("Vehicle Type: ").append(getVehicleType()).append("\n");
+        sb.append("Condition: ").append(getVehicleCondition()).append("\n");
+        sb.append("Amortization Type: ").append(getAmortizationType()).append("\n");
+        sb.append("Financing Status: ").append(getStatus()).append("\n");
+        sb.append("Financed Amount: R$ ").append(getFinancedAmount()).append("\n");
+        sb.append("Loan Term: ").append(getLoanTermInMonths()).append(" months\n");
+        sb.append("Annual Interest Rate: ").append(getAnnualInterestRate()).append("%\n");
+        sb.append("Installment Amount: R$ ").append(getInstallmentAmount()).append("\n");
+        sb.append("Total Amount Paid: R$ ").append(getTotalAmountPaid()).append("\n");
 
-                        "--- Financing Information ---%n" +
-                        "Financing Status: %s%n" +
-                        "Financed Amount: R$ %.2f%n" +
-                        "Loan Term: %d months%n" +
-                        "Annual Interest Rate: %.2f%%%n" +
-                        "Installment Amount: R$ %.2f%n" +
-                        "Total Amount Paid: R$ %.2f%n" +
-                        "Mileage: %d km%n" +
-                        "===================================%n",
-                getFinancingId(),
-                getBrand(), getModel(), (getManufactureYear() != null ? getManufactureYear() : 0),
-                getVehicleType(),
-                getVehicleCondition(),
-                getAmortizationType(),
-                getStatus(),
-                (getFinancedAmount() != null ? getFinancedAmount().doubleValue() : 0.0),
-                getLoanTermInMonths(),
-                (getAnnualInterestRate() != null ? getAnnualInterestRate().doubleValue() : 0.0),
-                (getInstallmentAmount() != null ? getInstallmentAmount().doubleValue() : 0.0),
-                (getTotalAmountPaid() != null ? getTotalAmountPaid().doubleValue() : 0.0),
-                (getMileage() != null ? getMileage() : 0)
-        );
+        if (vehicleCondition == VehicleCondition.USED) {
+            sb.append("Mileage: ").append(getMileage()).append(" km\n");
+        }
+        return sb.toString();
     }
 }

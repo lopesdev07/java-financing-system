@@ -239,11 +239,11 @@ public class RealEstateFinancingView {
             System.out.print("Down payment: ");
             BigDecimal downPayment = ScannerUtil.bigDecimalScanner(scanner);
 
-            System.out.print("Zoning: ");
-            String zoning = ScannerUtil.stringScanner(scanner);
-
             System.out.print("Desired loan term in months: ");
             int loanTermInMonths = ScannerUtil.intScanner(scanner);
+
+            System.out.print("Zoning: ");
+            String zoning = ScannerUtil.stringScanner(scanner);
 
             if (propertyType == PropertyType.HOUSE) {
                 System.out.print("Number of rooms: ");
@@ -261,7 +261,7 @@ public class RealEstateFinancingView {
                 int hasElevator = ScannerUtil.intScanner(scanner);
                 hasElevator = LoopUtil.getValidOption(scanner, hasElevator, 1, 2);
                 elevator = hasElevator == 1;
-                System.out.print("Condominium value: ");
+                System.out.print("Condominium fee: ");
                 condominiumValue = ScannerUtil.bigDecimalScanner(scanner);
             }
 

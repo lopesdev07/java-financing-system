@@ -136,45 +136,36 @@ public class RealEstateFinancing extends FinancingModel {
         this.zoning = zoning;
     }
 
+
     @Override
-    public String toString() {
-        return String.format(
-                "===== REAL ESTATE FINANCING =====%n" +
-                        "Financing ID: %d%n" +
-                        "Property Type: %s%n" +
-                        "Amortization Type: %s%n%n" +
-                        "--- Financing Information ---%n" +
-                        "Financing Status: %s%n" +
-                        "Financed Amount: R$ %.2f%n" +
-                        "Loan Term: %d months%n" +
-                        "Annual Interest Rate: %.2f%%%n" +
-                        "Installment Amount: R$ %.2f%n" +
-                        "Total Amount Paid: R$ %.2f%n%n" +
-                        "--- Property Information ---%n" +
-                        "Bedrooms: %d%n" +
-                        "Parking Spaces: %d%n" +
-                        "Land Area: %.2f m²%n" +
-                        "Floor: %d%n" +
-                        "Elevator: %s%n" +
-                        "Condominium Fee: R$ %.2f%n" +
-                        "Zoning: %s%n" +
-                        "===================================%n",
-                getFinancingId(),
-                getPropertyType(),
-                getAmortizationType(),
-                getStatus(),
-                (getFinancedAmount() != null ? getFinancedAmount().doubleValue() : 0.0),
-                getLoanTermInMonths(),
-                (getAnnualInterestRate() != null ? getAnnualInterestRate().doubleValue() : 0.0),
-                (getInstallmentAmount() != null ? getInstallmentAmount().doubleValue() : 0.0),
-                (getTotalAmountPaid() != null ? getTotalAmountPaid().doubleValue() : 0.0),
-                (getBedrooms() != null ? getBedrooms() : 0),
-                (getParkingSpaces() != null ? getParkingSpaces() : 0),
-                (getLandArea() != null ? getLandArea().doubleValue() : 0.0),
-                (getFloor() != null ? getFloor() : 0),
-                (hasElevator() != null && hasElevator()) ? "Yes" : "No",
-                (getCondominiumFee() != null ? getCondominiumFee().doubleValue() : 0.0),
-                getZoning()
-        );
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("---- REAL ESTATE FINANCING ----\n");
+        sb.append("Financing ID: ").append(getFinancingId()).append("\n");
+        sb.append("Property Type: ").append(getPropertyType()).append("\n");
+        sb.append("Amortization Type: ").append(getAmortizationType()).append("\n");
+        sb.append("Financing Status: ").append(getStatus()).append("\n");
+        sb.append("Financed Amount: R$ ").append(getFinancedAmount()).append("\n");
+        sb.append("Loan Term: ").append(getLoanTermInMonths()).append(" months\n");
+        sb.append("Annual Interest Rate: ").append(getAnnualInterestRate()).append("%\n");
+        sb.append("Installment Amount: R$ ").append(getInstallmentAmount()).append("\n");
+        sb.append("Total Amount Paid: R$ ").append(getTotalAmountPaid()).append("\n");
+        sb.append("Zoning: ").append(getZoning()).append("\n");
+        if (propertyType == PropertyType.HOUSE) {
+            sb.append("Rooms: ").append(getBedrooms()).append("\n");
+            sb.append("Parking Spaces: ").append(getParkingSpaces()).append("\n");
+            sb.append("Land Area: ").append(getLandArea()).append(" m²\n");
+        }
+        else if (propertyType == PropertyType.APARTMENT) {
+            sb.append("Floor: ").append(getFloor()).append("\n");
+            sb.append("Elevator: ").append(hasElevator() ? "Yes" : "No").append("\n");
+            sb.append("Condominium Fee: R$ ").append(getCondominiumFee()).append("\n");
+        }
+        else if (propertyType == PropertyType.LAND) {
+            sb.append("Land Area: ").append(getLandArea()).append(" m²\n");
+        }
+
+        return sb.toString();
     }
+
 }
