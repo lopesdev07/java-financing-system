@@ -159,31 +159,10 @@ public class RealEstateFinancingView {
 
     private void viewRealEstateFinancingDetails(Scanner scanner) {
         try {
-            System.out.print("Type the ID of the financing you want to see details for: ");
-            int financingID = ScannerUtil.intScanner(scanner);
-            RealEstateFinancing financing = service.findFinancingById(financingID);
-            System.out.println("===== FINANCING DETAILS =====");
-            System.out.printf("Financing ID: %d%n", financing.getFinancingId());
-            System.out.printf("Financed value: R$ %.2f%n", financing.getFinancedAmount());
-            System.out.printf("Loan term in months: %d months%n", financing.getLoanTermInMonths());
-            System.out.printf("Annual interest rate: %.2f%%%n", financing.getAnnualInterestRate());
-            System.out.printf("Installment amount: R$ %.2f%n", financing.getInstallmentAmount()); // temporary solution
-            System.out.printf("Total amount paid: R$ %.2f%n", financing.getTotalAmountPaid()); // temporary solution
-            System.out.printf("Amortization type: %s%n", financing.getAmortizationType());
-            System.out.printf("Property type: %s%n", financing.getPropertyType());
-            System.out.printf("Financing status: %s%n", financing.getStatus());
-
-            if (financing.getPropertyType() == PropertyType.HOUSE) {
-                System.out.printf("Rooms: %d%n", financing.getBedrooms());
-                System.out.printf("Parking spaces: %d%n", financing.getParkingSpaces());
-                System.out.printf("Land area: %.2f m²%n", financing.getLandArea());
-            } else if (financing.getPropertyType() == PropertyType.APARTMENT) {
-                System.out.printf("Floor: %d%n", financing.getFloor());
-                System.out.printf("Elevator: %s%n", (financing.hasElevator() ? "Yes" : "No"));
-                System.out.printf("Condominium value: R$ %.2f%n", financing.getCondominiumFee());
-            } else if (financing.getPropertyType() == PropertyType.LAND) {
-                System.out.printf("Land area (m²): %.2f m²%n", financing.getLandArea());
-            }}
+        System.out.print("Type the ID of the financing you want to see details for: ");
+        int financingID = ScannerUtil.intScanner(scanner);
+        RealEstateFinancing financing = service.findFinancingById(financingID);
+        System.out.println(financing.toString());}
         catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         } catch (IllegalStateException e) {

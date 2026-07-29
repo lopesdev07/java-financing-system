@@ -141,24 +141,7 @@ public class VehicleFinancingView {
             System.out.print("Type the ID of the financing you want to see details for: ");
             int financingID = ScannerUtil.intScanner(scanner);
             VehicleFinancing financing = service.findFinancingById(financingID);
-            System.out.println("===== FINANCING DETAILS =====");
-            System.out.printf("Financing ID: %d%n", financing.getFinancingId());
-            System.out.printf("Financed value: R$ %.2f%n", financing.getFinancedAmount());
-            System.out.printf("Loan term in months: %d months%n", financing.getLoanTermInMonths());
-            System.out.printf("Annual interest rate: %.2f%%%n", financing.getAnnualInterestRate());
-            System.out.printf("Installment amount: R$ %.2f%n", financing.getInstallmentAmount()); // temporary solution
-            System.out.printf("Total amount paid: R$ %.2f%n", financing.getTotalAmountPaid()); // temporary solution
-            System.out.printf("Amortization type: %s%n", financing.getAmortizationType());
-            System.out.printf("Vehicle type: %s%n", financing.getVehicleType());
-            System.out.printf("Vehicle condition: %s%n", financing.getVehicleCondition());
-            System.out.printf("Brand: %s%n", financing.getBrand());
-            System.out.printf("Model: %s%n", financing.getModel());
-            System.out.printf("Manufacture year: %d%n", financing.getManufactureYear());
-            System.out.printf("Financing status: %s%n", financing.getStatus());
-
-            if (financing.getVehicleCondition() == VehicleCondition.USED) {
-                System.out.printf("Mileage: %d km%n", financing.getMileage() != null ? financing.getMileage() : 0);
-            }
+            System.out.println(financing.toString());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         } catch (IllegalStateException e) {
@@ -283,7 +266,7 @@ public class VehicleFinancingView {
 
     private void displayVehicleFinancingSimulation(VehicleFinancing fin) {
         System.out.println("Here you can see the details of your financing simulation");
-        System.out.println("Please note that if this is a simulation, the financing ID will always be null, as it is not saved in the database yet.");
+        System.out.println("Please note that this is a simulation, the financing ID will always be null, as it is not saved in the database yet.");
         System.out.println(fin.toString());
     }
 }
