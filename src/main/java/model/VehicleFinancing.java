@@ -74,8 +74,8 @@ public class VehicleFinancing extends FinancingModel {
         sb.append("Financed Amount: R$ ").append(getFinancedAmount()).append("\n");
         sb.append("Loan Term: ").append(getLoanTermInMonths()).append(" months\n");
         sb.append("Annual Interest Rate: ").append(getAnnualInterestRate()).append("%\n");
-        sb.append("Installment Amount: R$ ").append(getInstallmentAmount()).append("\n");
-        sb.append("Total Amount Paid: R$ ").append(getTotalAmountPaid()).append("\n");
+        sb.append("Installment Amount: R$ " ).append(String.format("%.2f", getInstallmentAmount())).append("\n");
+        sb.append("Total Amount Paid: R$ ").append(String.format("%.2f", getTotalAmountPaid())).append("\n");
 
         if (vehicleCondition == VehicleCondition.USED) {
             sb.append("Mileage: ").append(getMileage()).append(" km\n");

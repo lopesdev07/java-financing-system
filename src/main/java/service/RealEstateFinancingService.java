@@ -35,6 +35,8 @@ public class RealEstateFinancingService {
             throw new IllegalStateException("User is not authorized to view this financing.");
         }
 
+        AmortizationCalculator.calculateInstallments(financing); // Calculate installments for the retrieved financing
+
         return financing;
     }
 
