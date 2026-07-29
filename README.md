@@ -1,14 +1,20 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.2 BETA - 2026-07-27
+# Java financing system | v1.9.3 BETA - 2026-07-29
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.2 - 2026-07-27
+## Changelog - v1.9.3 - 2026-07-29
 ### Upgrades and Fixes:
-- Fixed a bug where the findbyid method on both financing repositories were "creating" a user_id by getting the session user id instead of checking the financing's user_id. This caused a bug where users could see/edit financings that were not theirs. Now the method checks the financing's user_id and compares it to the session user id, returning null if they don't match and using a double.
+- Rewrote `toString()` on both `RealEstateFinancing` and `VehicleFinancing` using `StringBuilder`, with conditional display of type-specific fields (e.g. mileage is only shown for used vehicles).
 
-- Created LoopUtil class to handle loops in the views, reducing code repetition and improving maintainability.
+- Updated both financing detail views to use the new `toString()` implementation.
+
+- Fixed a bug where `installmentAmount` and `totalAmountPaid` displayed as `null` when viewing details of a saved financing. `findFinancingById` now recalculates installments before returning the financing.
+
+- Implemented financing cancellation for both financing types: a new `CANCELED` status can now be set through a dedicated option in the management menu, backed by a new `updateFinancingStatus` method in both services and repositories.
+
+- Fixed a navigation bug in the management menu where the "Return to Main Menu" option was unreachable due to a mismatched valid-option range.
 ---
 
 ## Utilized Technologies
@@ -82,10 +88,6 @@ export DB_PASSWORD="your_password"**
 
 ## Next Steps
 
-- Reorganize financing display logic 
-- Extract generic loop/menu methods (shared across views)
-- Stop re-instantiating services on every MainMenuView loop iteration
-- Add a `CANCELED` enum status
 - Add unit tests 
 - Add Javadocs back for 2.0
 - Implement a proper logging framework 
