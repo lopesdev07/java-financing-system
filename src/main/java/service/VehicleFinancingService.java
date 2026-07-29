@@ -42,6 +42,25 @@ public class VehicleFinancingService {
         return financing;
     }
 
+    public void updateFinancingStatus(Integer financingId, FinancingStatus newStatus) throws SQLException {
+        if (!Session.isLoggedIn())
+            throw new IllegalStateException("User is not authenticated.");
+
+        if (financingId == null)
+            throw new IllegalArgumentException("Invalid financing ID.");
+
+        VehicleFinancing existingFinancing = repository.findById(financingId);
+
+        if (existingFinancing == null)
+            throw new IllegalArgumentException("Financing not found.");
+
+        if (existingFinancing.getUserId() != Session.getUserId())
+            throw new IllegalStateException("User is not authorized to edit this financing.");
+
+        existingFinancing.setFinancingStatus(newStatus);
+        repository.updateFinancingStatus(existingFinancing);
+    }
+
     private void validateData(BigDecimal downPayment, BigDecimal vehicleValue, int loanTermInMonths,
                               VehicleCondition vehicleCondition, AmortizationType amortizationType, VehicleType vehicleType) {
 

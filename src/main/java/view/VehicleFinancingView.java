@@ -40,16 +40,33 @@ public class VehicleFinancingView {
         System.out.println("1. View saved financings");
         System.out.println("2. Edit saved financings");
         System.out.println("3. View details of a specific financing");
-        System.out.println("4. Return to Main Menu");
+        System.out.println("4. Cancel a specific financing");
+        System.out.println("5. Return to Main Menu");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
-        option = LoopUtil.getValidOption(scanner, option, 1, 4);
+        option = LoopUtil.getValidOption(scanner, option, 1, 5);
         switch (option) {
             case 1 -> viewVehicleFinancings();
             case 2 -> editVehicleFinancing(scanner);
             case 3 -> viewVehicleFinancingDetails(scanner);
-            case 4 -> System.out.println("Returning to the main menu...");
+            case 4 -> cancelVehicleFinancing(scanner);
+            case 5 -> System.out.println("Returning to the main menu...");
             default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
+        }
+    }
+
+    private void cancelVehicleFinancing(Scanner scanner) {
+        try {
+            System.out.print("Type the ID of the financing you want to cancel: ");
+            int financingID = ScannerUtil.intScanner(scanner);
+            service.updateFinancingStatus(financingID, FinancingStatus.CANCELED);
+            System.out.println("Financing canceled successfully!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error: an error occurred with the database. Please try again.");
         }
     }
 

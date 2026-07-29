@@ -210,4 +210,27 @@ public class VehicleFinancingRepository {
         }
     }
 
+    public void updateFinancingStatus(VehicleFinancing financing) throws SQLException {
+
+        String sql = """
+            UPDATE vehicle_financing
+            SET financing_status = ?
+            WHERE financing_id = ? AND user_id = ?
+        """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, financing.getStatus().name());
+            stmt.setInt(2, financing.getFinancingId());
+            stmt.setInt(3, Session.getUserId());
+
+            int rowsUpdated = stmt.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                throw new SQLException("No financing record was updated. Please verify the financing ID and user ID.");
+            }
+        }
+    }
+
 }
