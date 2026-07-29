@@ -44,7 +44,7 @@ public class RealEstateFinancingView {
         System.out.println("5. Return to Main Menu");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
-        option = LoopUtil.getValidOption(scanner, option, 1, 4);
+        option = LoopUtil.getValidOption(scanner, option, 1, 5);
         switch (option) {
             case 1 -> viewRealEstateFinancings();
             case 2 -> editRealEstateFinancing(scanner);
