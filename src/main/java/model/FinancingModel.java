@@ -82,4 +82,9 @@ public abstract class FinancingModel {
     public void setTotalAmountPaid(BigDecimal totalAmountPaid) {
         this.totalAmountPaid = totalAmountPaid;
     }
+
+
+    public void setFinancingStatus(FinancingStatus status) {
+        this.status = status;
+    }
 }

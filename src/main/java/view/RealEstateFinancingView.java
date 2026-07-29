@@ -40,7 +40,8 @@ public class RealEstateFinancingView {
         System.out.println("1. View saved financings");
         System.out.println("2. Edit saved financings");
         System.out.println("3. View details of a specific financing");
-        System.out.println("4. Return to Main Menu");
+        System.out.println("4. Cancel a specific financing");
+        System.out.println("5. Return to Main Menu");
         System.out.print("Type the number corresponding to the action you want to perform:");
         int option = ScannerUtil.intScanner(scanner);
         option = LoopUtil.getValidOption(scanner, option, 1, 4);
@@ -48,8 +49,24 @@ public class RealEstateFinancingView {
             case 1 -> viewRealEstateFinancings();
             case 2 -> editRealEstateFinancing(scanner);
             case 3 -> viewRealEstateFinancingDetails(scanner);
-            case 4 -> System.out.println("Returning to the main menu...");
+            case 4 -> cancelRealEstateFinancing(scanner);
+            case 5 -> System.out.println("Returning to the main menu...");
             default -> throw new IllegalStateException(); // unreachable: option already validated by LoopUtil
+        }
+    }
+
+    private void cancelRealEstateFinancing(Scanner scanner) {
+        try {
+            System.out.print("Type the ID of the financing you want to cancel: ");
+            int financingID = ScannerUtil.intScanner(scanner);
+            service.updateFinancingStatus(financingID, FinancingStatus.CANCELED);
+            System.out.println("Financing canceled successfully!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error: an error occurred with the database. Please try again.");
         }
     }
 
@@ -172,12 +189,10 @@ public class RealEstateFinancingView {
             System.out.println("Error: an error occurred with the database. Please try again.");
         }}
 
-
-
     private void simulationMenu(Scanner scanner) {
-        createRealEstateFinancing(scanner);
-        displayRealEstateFinancingSimulation(service.getCurrentFinancing());
-        saveRealEstateFinancing(scanner);
+        if (createRealEstateFinancing(scanner)) {
+            displayRealEstateFinancingSimulation(service.getCurrentFinancing());
+            saveRealEstateFinancing(scanner);}
     }
 
     private void saveRealEstateFinancing(Scanner scanner) {
@@ -199,7 +214,7 @@ public class RealEstateFinancingView {
         }
     }
 
-    private void createRealEstateFinancing(Scanner scanner) { // creates a new real estate financing simulation based on user input WITHOUT saving it automatically to the database
+    private boolean createRealEstateFinancing(Scanner scanner) { // creates a new real estate financing simulation based on user input WITHOUT saving it automatically to the database
         try {
             Integer rooms = null;
             Integer parkingSpaces = null;
@@ -255,6 +270,7 @@ public class RealEstateFinancingView {
 
             System.out.println("The financing simulation was created successfully! You can now view the details and choose to save it if you wish.");
 
+            return true;
         } catch (InvalidDownPaymentException e) {
             System.out.println("Error: " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -262,6 +278,7 @@ public class RealEstateFinancingView {
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
         }
+        return false;
     }
 
     private AmortizationType chooseAmortizationType(Scanner scanner) {

@@ -152,9 +152,10 @@ public class VehicleFinancingView {
     }
 
     private void simulationMenu(Scanner scanner) {
-        createVehicleFinancing(scanner);
-        displayVehicleFinancingSimulation(service.getCurrentFinancing());
-        saveVehicleFinancing(scanner);
+        if (createVehicleFinancing(scanner)) {
+            displayVehicleFinancingSimulation(service.getCurrentFinancing());
+            saveVehicleFinancing(scanner);
+        }
     }
 
     private void saveVehicleFinancing(Scanner scanner) {
@@ -176,7 +177,7 @@ public class VehicleFinancingView {
         }
     }
 
-    private void createVehicleFinancing(Scanner scanner) { // creates a new vehicle financing simulation based on user input WITHOUT saving it automatically to the database
+    private boolean createVehicleFinancing(Scanner scanner) { // creates a new vehicle financing simulation based on user input WITHOUT saving it automatically to the database
         try {
             VehicleType vehicleType = chooseVehicleType(scanner);
             AmortizationType amortizationType = chooseAmortizationType(scanner);
@@ -210,7 +211,7 @@ public class VehicleFinancingView {
                     amortizationType, vehicleType, brand, model, manufactureYear, mileage);
 
             System.out.println("The financing simulation was created successfully! You can now view the details and choose to save it if you wish.");
-
+            return true;
         } catch (InvalidVehicleDownPaymentException e) {
             System.out.println("Error: " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -218,6 +219,7 @@ public class VehicleFinancingView {
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
         }
+        return false;
     }
 
     private AmortizationType chooseAmortizationType(Scanner scanner) {

@@ -177,7 +177,7 @@ public class RealEstateFinancingRepository {
                     elevator = ?,
                     condominium_fee = ?,
                     zoning = ?
-                WHERE financing_id = ?
+                WHERE financing_id = ? AND user_id = ?
             """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -197,11 +197,35 @@ public class RealEstateFinancingRepository {
             stmt.setObject(12, financing.getCondominiumFee(), java.sql.Types.DECIMAL);
             stmt.setString(13, financing.getZoning());
             stmt.setInt(14, financing.getFinancingId());
+            stmt.setInt(15, Session.getUserId());
 
             int rowsUpdated = stmt.executeUpdate();
 
             if (rowsUpdated == 0) {
                 throw new SQLException("No financing record was updated. Please verify the financing ID.");
+            }
+        }
+    }
+
+    public void updateFinancingStatus(RealEstateFinancing financing) throws SQLException {
+
+        String sql = """
+                UPDATE realestate_financing
+                SET financing_status = ?
+                WHERE financing_id = ? AND user_id = ?
+            """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, financing.getStatus().name());
+            stmt.setInt(2, financing.getFinancingId());
+            stmt.setInt(3, Session.getUserId());
+
+            int rowsUpdated = stmt.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                throw new SQLException("No financing record was updated. Please verify the financing ID and user ID.");
             }
         }
     }

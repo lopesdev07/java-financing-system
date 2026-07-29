@@ -127,6 +127,26 @@ public class RealEstateFinancingService {
 
         currentFinancing = null;
     }
+
+    public void updateFinancingStatus(Integer financingId, FinancingStatus newStatus) throws SQLException {
+        if (!Session.isLoggedIn())
+            throw new IllegalStateException("User is not authenticated.");
+
+        if (financingId == null)
+            throw new IllegalArgumentException("Invalid financing ID.");
+
+        RealEstateFinancing existingFinancing = repository.findById(financingId);
+
+        if (existingFinancing == null)
+            throw new IllegalArgumentException("Financing not found.");
+
+        if (existingFinancing.getUserId() != Session.getUserId())
+            throw new IllegalStateException("User is not authorized to edit this financing.");
+
+        existingFinancing.setFinancingStatus(newStatus);
+        repository.updateFinancingStatus(existingFinancing);
+    }
+
     public void updateFinancing(Integer financingId, BigDecimal downPayment, BigDecimal propertyValue, int loanTermInMonths, PropertyCondition propertyCondition, AmortizationType amortizationType, PropertyType propertyType, Integer bedrooms, Integer parkingSpaces, BigDecimal landArea, Integer floor, Boolean elevator, BigDecimal condominiumFee, String zoning) throws SQLException, InvalidDownPaymentException {
 
 
