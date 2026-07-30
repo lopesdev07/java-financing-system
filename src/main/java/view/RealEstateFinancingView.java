@@ -59,7 +59,7 @@ public class RealEstateFinancingView {
         try {
             System.out.print("Type the ID of the financing you want to cancel: ");
             int financingID = ScannerUtil.intScanner(scanner);
-            service.updateFinancingStatus(financingID, FinancingStatus.CANCELED);
+            service.cancelFinancing(financingID);
             System.out.println("Financing canceled successfully!");
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());

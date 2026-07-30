@@ -42,7 +42,7 @@ public class VehicleFinancingService {
         return financing;
     }
 
-    public void updateFinancingStatus(Integer financingId, FinancingStatus newStatus) throws SQLException {
+    public void updateFinancingStatus(Integer financingId) throws SQLException {
         if (!Session.isLoggedIn())
             throw new IllegalStateException("User is not authenticated.");
 
@@ -57,7 +57,10 @@ public class VehicleFinancingService {
         if (existingFinancing.getUserId() != Session.getUserId())
             throw new IllegalStateException("User is not authorized to edit this financing.");
 
-        existingFinancing.setFinancingStatus(newStatus);
+        if (existingFinancing.getStatus() != FinancingStatus.APPROVED)
+            throw new IllegalStateException("Only approved financings can be canceled.");
+
+        existingFinancing.setFinancingStatus(FinancingStatus.CANCELED);
         repository.updateFinancingStatus(existingFinancing);
     }
 
