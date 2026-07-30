@@ -1,20 +1,15 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.3 BETA - 2026-07-29
+# Java financing system | v1.9.4 BETA - 2026-07-30
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.3 - 2026-07-29
+## Changelog - v1.9.4 - 2026-07-30
 ### Upgrades and Fixes:
-- Rewrote `toString()` on both `RealEstateFinancing` and `VehicleFinancing` using `StringBuilder`, with conditional display of type-specific fields (e.g. mileage is only shown for used vehicles).
+- Moved cancellation logic from the view layer to the service layer: the view now sends only the financing ID, and a new `cancelFinancing()` method in each service owns the `CANCELED` status assignment. This method also validates that the financing is currently `APPROVED` before allowing the transition, preventing invalid cancellations (e.g. canceling an already-canceled or rejected financing).
 
-- Updated both financing detail views to use the new `toString()` implementation.
+- Blocked editing of canceled financings: `updateFinancing()` now rejects the operation if the financing's current status is `CANCELED`, in both `RealEstateFinancingService` and `VehicleFinancingService`. This preserves the immutability guarantee that `CANCELED` is meant to provide as a soft-delete state.
 
-- Fixed a bug where `installmentAmount` and `totalAmountPaid` displayed as `null` when viewing details of a saved financing. `findFinancingById` now recalculates installments before returning the financing.
-
-- Implemented financing cancellation for both financing types: a new `CANCELED` status can now be set through a dedicated option in the management menu, backed by a new `updateFinancingStatus` method in both services and repositories.
-
-- Fixed a navigation bug in the management menu where the "Return to Main Menu" option was unreachable due to a mismatched valid-option range.
 ---
 
 ## Utilized Technologies
