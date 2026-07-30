@@ -10,6 +10,7 @@
 
 - Blocked editing of canceled financings: `updateFinancing()` now rejects the operation if the financing's current status is `CANCELED`, in both `RealEstateFinancingService` and `VehicleFinancingService`. This preserves the immutability guarantee that `CANCELED` is meant to provide as a soft-delete state.
 
+- Added unit tests for PRICE and SAC methods in AmortizationCalculator.
 ---
 
 ## Utilized Technologies
@@ -83,7 +84,7 @@ export DB_PASSWORD="your_password"**
 
 ## Next Steps
 
-- Add unit tests 
+- Add more unit tests
 - Add Javadocs back for 2.0
 - Implement a proper logging framework 
 
