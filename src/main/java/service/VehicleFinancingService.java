@@ -165,6 +165,9 @@ public class VehicleFinancingService {
         if (existingFinancing.getUserId() != Session.getUserId())
             throw new IllegalStateException("User is not authorized to edit this financing.");
 
+        if (existingFinancing.getStatus() == FinancingStatus.CANCELED)
+            throw new IllegalStateException("Canceled financings cannot be edited.");
+
         // new fin verifications
         validateData(downPayment, vehicleValue, loanTermInMonths, vehicleCondition, amortizationType, vehicleType);
         validateDownPayment(downPayment, vehicleValue);
