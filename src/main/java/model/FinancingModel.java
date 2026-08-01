@@ -14,6 +14,9 @@ public abstract class FinancingModel {
     protected int userId;
     private BigDecimal installmentAmount;
     private BigDecimal totalAmountPaid;
+    private BigDecimal lastInstallmentAmount;
+    private BigDecimal installmentDecrement;
+
 
     public FinancingModel(
             BigDecimal financedAmount,
@@ -86,5 +89,22 @@ public abstract class FinancingModel {
 
     public void setFinancingStatus(FinancingStatus status) {
         this.status = status;
+    }
+
+
+    public BigDecimal getLastInstallmentAmount() {
+        return this.lastInstallmentAmount;
+    }
+
+    public void setLastInstallmentAmount(BigDecimal lastInstallmentAmount) {
+        this.lastInstallmentAmount = lastInstallmentAmount;
+    }
+
+    public BigDecimal getInstallmentDecrement() {
+        return this.installmentDecrement;
+    }
+
+    public void setInstallmentDecrement(BigDecimal installmentDecrement) {
+        this.installmentDecrement = installmentDecrement;
     }
 }
