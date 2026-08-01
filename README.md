@@ -1,16 +1,15 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.4 BETA - 2026-07-30
+# Java financing system | v1.9.4 BETA - 2026-08-01
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.4 - 2026-07-30
+## Changelog - v1.9.4 - 2026-08-01
 ### Upgrades and Fixes:
-- Moved cancellation logic from the view layer to the service layer: the view now sends only the financing ID, and a new `cancelFinancing()` method in each service owns the `CANCELED` status assignment. This method also validates that the financing is currently `APPROVED` before allowing the transition, preventing invalid cancellations (e.g. canceling an already-canceled or rejected financing).
 
-- Blocked editing of canceled financings: `updateFinancing()` now rejects the operation if the financing's current status is `CANCELED`, in both `RealEstateFinancingService` and `VehicleFinancingService`. This preserves the immutability guarantee that `CANCELED` is meant to provide as a soft-delete state.
+- Changed SAC logic to be more accurate about the installments.
 
-- Added unit tests for PRICE and SAC methods in AmortizationCalculator.
+- Finished AmortizationCalculatorTest class with the new SAC logic.
 ---
 
 ## Utilized Technologies
