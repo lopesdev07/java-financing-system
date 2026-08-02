@@ -1,15 +1,13 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.4 BETA - 2026-08-01
+# Java financing system | v1.9.4 BETA - 2026-08-02
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.4 - 2026-08-01
+## Changelog - v1.9.4 - 2026-08-02
 ### Upgrades and Fixes:
 
-- Changed SAC logic to be more accurate about the installments.
-
-- Finished AmortizationCalculatorTest class with the new SAC logic.
+- Added test classes for LoopUtil and PasswordUtil
 ---
 
 ## Utilized Technologies
