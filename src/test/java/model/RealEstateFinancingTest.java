@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RealEstateFinancingTest {
     @Test
-    void mustContainHouseSpecificCamps() {
+    void mustContainHouseSpecificFields() {
         RealEstateFinancing financing = new RealEstateFinancing(
                 new BigDecimal("100000"),
                 120,
@@ -38,7 +38,7 @@ public class RealEstateFinancingTest {
 
     }
     @Test
-    void mustContainApartmentSpecificCamps() {
+    void mustContainApartmentSpecificFields() {
         RealEstateFinancing financing = new RealEstateFinancing(
                 new BigDecimal("100000"),
                 120,
@@ -68,7 +68,7 @@ public class RealEstateFinancingTest {
     }
 
     @Test
-    void mustContainLandSpecificCamps() {
+    void mustContainLandSpecificFields() {
         RealEstateFinancing financing = new RealEstateFinancing(
                 new BigDecimal("100000"),
                 120,
