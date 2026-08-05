@@ -4,6 +4,7 @@ import exceptions.AuthenticationFailedException;
 import exceptions.CpfAlreadyRegisteredException;
 import exceptions.InvalidCpfException;
 import model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import repository.AuthRepository;
@@ -15,6 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 public class AuthServiceTest {
+    @AfterEach
+    void resetSession() {
+        Session.logout();
+    }
+
     @Test
     void cpfIsValidMustReturnFalseWhenCpfIsNull() {
         AuthRepository authRepository = Mockito.mock(AuthRepository.class);
