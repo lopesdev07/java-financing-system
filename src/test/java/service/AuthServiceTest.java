@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class AuthServiceTest {
@@ -146,7 +148,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void registerUserMustThrowInvalidCpfExceptionWhenCpfIsInvalid() {
+    void registerUserMustThrowInvalidCpfExceptionWhenCpfIsInvalid() throws SQLException {
         AuthRepository authRepository = Mockito.mock(AuthRepository.class);
         AuthService authService = new AuthService(authRepository);
         String invalidCpf = "1234567890"; // Invalid CPF (10)
@@ -154,6 +156,8 @@ public class AuthServiceTest {
         User user = new User(1, invalidCpf, null);
 
         assertThrows(InvalidCpfException.class, () -> authService.registerUser(invalidCpf, testPassword, user));
+        verify(authRepository, never()).saveUser(any());
+        verify(authRepository, never()).findByCpf(any());
     }
     @Test
     void registerUserMustThrowCpfAlreadyRegisteredExceptionWhenCpfIsAlreadyRegistered() throws SQLException {
@@ -166,6 +170,7 @@ public class AuthServiceTest {
         Mockito.when(authRepository.findByCpf(validCpf)).thenReturn(java.util.Optional.of(new User(1, validCpf, "hashedPassword")));
 
         assertThrows(CpfAlreadyRegisteredException.class, () -> authService.registerUser(validCpf, testPassword, user));
+        verify(authRepository, never()).saveUser(any());
     }
 
     @Test
