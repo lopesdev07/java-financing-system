@@ -8,6 +8,12 @@
 ### Upgrades and Fixes:
 
 - Completed remaining tests for AuthService with 5 new tests
+
+- Added basic static logout method to Session class in service
+
+- Added @AfterEach method to AuthServiceTest to clear session after each test
+
+- Added partial RealEstateFinancingTest with 2 test cases, expected to have around 11 when fully implemented
 ---
 
 ## Utilized Technologies
