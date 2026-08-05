@@ -1,16 +1,18 @@
 package service;
 
 import exceptions.AuthenticationFailedException;
+import exceptions.CpfAlreadyRegisteredException;
 import exceptions.InvalidCpfException;
 import model.User;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mockito;
 import repository.AuthRepository;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
 public class AuthServiceTest {
     @Test
@@ -116,7 +118,67 @@ public class AuthServiceTest {
 
         assertEquals(user.getUserId(), Session.getUserId());
     }
+    @Test
+    void checkAlreadyExistsMustThrowCpfAlreadyRegisteredExceptionWhenUserExists() throws SQLException {
+        AuthRepository authRepository = Mockito.mock(AuthRepository.class);
+        AuthService authService = new AuthService(authRepository);
+        String cpfAlreadyRegistered = "12345678901"; // Valid CPF
+        Mockito.when(authRepository.findByCpf(cpfAlreadyRegistered)).thenReturn(java.util.Optional.of(new User(1, cpfAlreadyRegistered, "hashedPassword")));
 
+        assertThrows(exceptions.CpfAlreadyRegisteredException.class, () -> authService.checkAlreadyExists(cpfAlreadyRegistered));
 
+    }
+
+    @Test
+    void checkAlreadyExistsMustNotThrowExceptionWhenUserDoesNotExist() throws SQLException {
+        AuthRepository authRepository = Mockito.mock(AuthRepository.class);
+        AuthService authService = new AuthService(authRepository);
+        String cpfNotRegistered = "12345678901"; // Valid CPF
+        Mockito.when(authRepository.findByCpf(cpfNotRegistered)).thenReturn(java.util.Optional.empty());
+
+        assertDoesNotThrow(() -> authService.checkAlreadyExists(cpfNotRegistered));
+    }
+
+    @Test
+    void registerUserMustThrowInvalidCpfExceptionWhenCpfIsInvalid() {
+        AuthRepository authRepository = Mockito.mock(AuthRepository.class);
+        AuthService authService = new AuthService(authRepository);
+        String invalidCpf = "1234567890"; // Invalid CPF (10)
+        String testPassword = "randompassword";
+        User user = new User(1, invalidCpf, null);
+
+        assertThrows(InvalidCpfException.class, () -> authService.registerUser(invalidCpf, testPassword, user));
+    }
+    @Test
+    void registerUserMustThrowCpfAlreadyRegisteredExceptionWhenCpfIsAlreadyRegistered() throws SQLException {
+        AuthRepository authRepository = Mockito.mock(AuthRepository.class);
+        AuthService authService = new AuthService(authRepository);
+        String validCpf = "12345678901"; // Valid CPF
+        String testPassword = "randompassword";
+        User user = new User(1, validCpf, null);
+
+        Mockito.when(authRepository.findByCpf(validCpf)).thenReturn(java.util.Optional.of(new User(1, validCpf, "hashedPassword")));
+
+        assertThrows(CpfAlreadyRegisteredException.class, () -> authService.registerUser(validCpf, testPassword, user));
+    }
+
+    @Test
+    void registerUserMustRegisterUserSuccessfullyWhenCpfIsValidAndNotRegistered() throws SQLException, CpfAlreadyRegisteredException, InvalidCpfException {
+        AuthRepository authRepository = Mockito.mock(AuthRepository.class);
+        AuthService authService = new AuthService(authRepository);
+        String validCpf = "12345678901"; // Valid CPF
+        String testPassword = "randompassword";
+        User user = new User(1, validCpf, null);
+
+        Mockito.when(authRepository.findByCpf(validCpf)).thenReturn(Optional.empty());
+
+        authService.registerUser(validCpf, testPassword, user);
+
+        assertNotNull(user.getPasswordHash());
+        assertNotEquals(testPassword, user.getPasswordHash());
+        assertTrue(util.PasswordUtil.checkPassword(testPassword, user.getPasswordHash()));
+
+        verify(authRepository).saveUser(user);
+    }
 
 }
