@@ -59,6 +59,38 @@ public class RealEstateFinancingTest {
         assertEquals("Invalid financing.", ex.getMessage());
     }
 
+    @Test
+    void findFinancingByIdMustThrowIllegalStateExceptionWhenUserIsNotAuthorized() throws SQLException {
+        RealEstateFinancingRepository realEstateFinancingRepository = Mockito.mock(RealEstateFinancingRepository.class);
+        RealEstateFinancingService realEstateFinancingService = new RealEstateFinancingService(realEstateFinancingRepository);
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000),
+                360,
+                BigDecimal.valueOf(10.5),
+                AmortizationType.PRICE,
+                PropertyType.HOUSE,
+                FinancingStatus.REQUESTED,
+                3,
+                2,
+                BigDecimal.valueOf(450.0),
+                null,
+                null,
+                null,
+                "Residential",
+                1
+        );
+        financing.setFinancingId(1);
+        Session.login(2);
+
+        Mockito.when(realEstateFinancingRepository.findById(1)).thenReturn(financing);
+
+        IllegalStateException ex = assertThrows(
+                IllegalStateException.class,
+                () -> realEstateFinancingService.findFinancingById(1)
+        );
+        assertEquals("User is not authorized to view this financing.", ex.getMessage());
+    }
+
 
 
 }
