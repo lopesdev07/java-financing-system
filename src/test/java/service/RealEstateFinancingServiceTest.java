@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-public class RealEstateFinancingTest {
+public class RealEstateFinancingServiceTest {
     @Test
     void findFinancingByIdMustThrowIllegalArgumentExceptionWhenFinancingNotFound() throws SQLException {
         RealEstateFinancingRepository realEstateFinancingRepository = Mockito.mock(RealEstateFinancingRepository.class);
