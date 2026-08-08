@@ -1,13 +1,19 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.5 BETA - 2026-08-07
+# Java financing system | v1.9.5 BETA - 2026-08-08
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.5 - 2026-08-07
+## Changelog - v1.9.5 - 2026-08-08
 ### Upgrades and Fixes:
 
-- Added a test case in RealEstateFinancingServiceTest to check if findFinancingById method throws an exception if the user is not authorized to view a specific financing. This ensures that users can only access their own financings and not those of other users.
+- Added 13 more test cases to RealEstateFinancingServiceTest. Covers input validation (downPayment, propertyValue, loanTermInMonths,
+  propertyCondition, amortizationType, propertyType) authentication and authorization checks, the APPROVED/REJECTED status branch, the
+  interest rate branch by property condition, and findFinancingById's success path including installment calculation.
+
+- Added @BeforeEach and @AfterEach methods to RealEstateFinancingServiceTest to set up and tear down test data, ensuring a clean state for each test.
+
+- Added repository and service as class fields, initialized in the setUp() (@BeforeEach) method, to avoid repeated instantiation in each test method.
 ---
 
 ## Utilized Technologies
