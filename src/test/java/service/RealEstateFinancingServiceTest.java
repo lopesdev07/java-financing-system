@@ -163,7 +163,7 @@ public class RealEstateFinancingServiceTest {
 
     @Test
     void simulateFinancingMustThrowExceptionWhenUserIsNotLoggedIn() {
-        Session.logout(); // desfaz o login(1) que o @BeforeEach faz por padrão — esse teste PRECISA de ninguém logado
+        Session.logout();
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.simulateFinancing(
                 new BigDecimal("100000"), new BigDecimal("50000"), 360,
@@ -219,5 +219,32 @@ public class RealEstateFinancingServiceTest {
 
         RealEstateFinancing result = service.getCurrentFinancing();
         assertEquals(new BigDecimal("5.0"), result.getAnnualInterestRate());
+    }
+
+    @Test
+    void saveCurrentFinancingMustThrowIllegalStateExceptionWhenUserIsNotLoggedIn() {
+        Session.logout();
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.saveCurrentFinancing());
+        assertEquals("User is not authenticated.", ex.getMessage());
+    }
+
+    @Test
+    void saveCurrentFinancingMustThrowIllegalStateExceptionWhenCurrentFinancingIsNull() {
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.saveCurrentFinancing());
+        assertEquals("No simulation to save.", ex.getMessage());
+    }
+    @Test
+    void saveCurrentFinancingMustCallRepositorySaveMethod() throws InvalidDownPaymentException, SQLException {
+        service.simulateFinancing(
+                new BigDecimal("100000"), new BigDecimal("10000"), 360,
+                PropertyCondition.NEW, AmortizationType.PRICE,
+                PropertyType.HOUSE, 2, 3, null, null, null, null, "Residential"
+        );
+        RealEstateFinancing result = service.getCurrentFinancing();
+
+        service.saveCurrentFinancing();
+
+        Mockito.verify(repository).saveFinancing(result);
     }
 }
