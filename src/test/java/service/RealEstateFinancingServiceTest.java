@@ -275,12 +275,12 @@ public class RealEstateFinancingServiceTest {
         RealEstateFinancing financing = new RealEstateFinancing(
                 BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
                 PropertyType.HOUSE, FinancingStatus.APPROVED, 3, 2, BigDecimal.valueOf(450.0),
-                null, null, null, "Residential", 1
+                null, null, null, "Residential", 2
         );
         financing.setFinancingId(2);
-        Mockito.when(repository.findById(1)).thenReturn(financing);
+        Mockito.when(repository.findById(2)).thenReturn(financing);
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.cancelFinancing(1));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.cancelFinancing(2));
         assertEquals("User is not authorized to edit this financing.", ex.getMessage());
     }
 
