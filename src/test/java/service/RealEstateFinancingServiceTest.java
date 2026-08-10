@@ -234,6 +234,7 @@ public class RealEstateFinancingServiceTest {
         IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.saveCurrentFinancing());
         assertEquals("No simulation to save.", ex.getMessage());
     }
+
     @Test
     void saveCurrentFinancingMustCallRepositorySaveMethod() throws InvalidDownPaymentException, SQLException {
         service.simulateFinancing(
@@ -247,4 +248,54 @@ public class RealEstateFinancingServiceTest {
 
         Mockito.verify(repository).saveFinancing(result);
     }
+
+    @Test
+    void cancelFinancingMustThrowIllegalStateExceptionWhenUserIsNotLoggedIn() {
+        Session.logout();
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.cancelFinancing(1));
+        assertEquals("User is not authenticated.", ex.getMessage());
+    }
+
+    @Test
+    void cancelFinancingMustThrowIllegalArgumentExceptionWhenCurrentFinancingIdIsNull() throws InvalidDownPaymentException {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.cancelFinancing(null));
+        assertEquals("Invalid financing ID.", ex.getMessage());
+    }
+
+    @Test
+    void cancelFinancingMustThrowIllegalArgumentExceptionWhenFinancingNotFound() throws SQLException {
+        Mockito.when(repository.findById(1)).thenReturn(null);
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.cancelFinancing(1));
+        assertEquals("Financing not found.", ex.getMessage());
+    }
+
+    @Test
+    void cancelFinancingMustThrowIllegalStateExceptionWhenUserIsNotAuthorized() throws SQLException {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.APPROVED, 3, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        );
+        financing.setFinancingId(2);
+        Mockito.when(repository.findById(1)).thenReturn(financing);
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.cancelFinancing(1));
+        assertEquals("User is not authorized to edit this financing.", ex.getMessage());
+    }
+
+    @Test
+    void cancelFinancingMustThrowIllegalStateExceptionWhenFinancingStatusIsNotApproved() throws SQLException {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.REQUESTED, 3, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        );
+        financing.setFinancingId(1);
+        Mockito.when(repository.findById(1)).thenReturn(financing);
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.cancelFinancing(1));
+        assertEquals("Only approved financings can be canceled.", ex.getMessage());
+
+    }
+
 }
