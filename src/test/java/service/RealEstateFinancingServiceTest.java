@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.FinancingNotFoundException;
 import exceptions.InvalidDownPaymentException;
 import model.*;
 import org.junit.jupiter.api.AfterEach;
@@ -10,6 +11,8 @@ import repository.RealEstateFinancingRepository;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -314,4 +317,242 @@ public class RealEstateFinancingServiceTest {
         assertEquals(FinancingStatus.CANCELED, financing.getStatus());
         Mockito.verify(repository).updateFinancingStatus(financing);
     }
+
+    @Test
+    void updateFinancingMustThrowIllegalStateExceptionWhenUserIsNotLoggedIn() {
+        Session.logout();
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.updateFinancing(
+                1, new BigDecimal("10000"), new BigDecimal("100000"), 360,
+                PropertyCondition.NEW, AmortizationType.PRICE, PropertyType.HOUSE,
+                3, 2, null, null, null, null, "Residential"
+        ));
+        assertEquals("User is not authenticated.", ex.getMessage());
+    }
+
+    @Test
+    void updateFinancingMustThrowIllegalArgumentExceptionWhenFinancingIdIsNull() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.updateFinancing(
+                null, new BigDecimal("10000"), new BigDecimal("100000"), 360,
+                PropertyCondition.NEW, AmortizationType.PRICE, PropertyType.HOUSE,
+                3, 2, null, null, null, null, "Residential"
+        ));
+        assertEquals("Invalid financing ID.", ex.getMessage());
+    }
+
+    @Test
+    void updateFinancingMustThrowIllegalArgumentExceptionWhenFinancingNotFound() throws SQLException {
+        Mockito.when(repository.findById(1)).thenReturn(null);
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.updateFinancing(
+                1, new BigDecimal("10000"), new BigDecimal("100000"), 360,
+                PropertyCondition.NEW, AmortizationType.PRICE, PropertyType.HOUSE,
+                3, 2, null, null, null, null, "Residential"
+        ));
+        assertEquals("Financing not found.", ex.getMessage());
+    }
+
+    @Test
+    void updateFinancingMustThrowIllegalStateExceptionWhenUserIsNotAuthorized() throws SQLException {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.APPROVED, 3, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 2
+        );
+        financing.setFinancingId(2);
+        Mockito.when(repository.findById(2)).thenReturn(financing);
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.updateFinancing(
+                2, new BigDecimal("10000"), new BigDecimal("100000"), 360,
+                PropertyCondition.NEW, AmortizationType.PRICE, PropertyType.HOUSE,
+                3, 2, null, null, null, null, "Residential"
+        ));
+        assertEquals("User is not authorized to edit this financing.", ex.getMessage());
+    }
+
+    @Test
+    void updateFinancingMustThrowIllegalStateExceptionWhenFinancingStatusIsCanceled() throws SQLException {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.CANCELED, 3, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        );
+        financing.setFinancingId(1);
+        Mockito.when(repository.findById(1)).thenReturn(financing);
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> service.updateFinancing(
+                1, new BigDecimal("10000"), new BigDecimal("100000"), 360,
+                PropertyCondition.NEW, AmortizationType.PRICE, PropertyType.HOUSE,
+                3, 2, null, null, null, null, "Residential"
+        ));
+        assertEquals("Canceled financings cannot be edited.", ex.getMessage());
+    }
+
+    @Test
+    void updateFinancingMustCallRepositoryUpdateAndResetCurrentFinancing() throws SQLException, InvalidDownPaymentException {
+        RealEstateFinancing existingFinancing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.APPROVED, 3, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        );
+        existingFinancing.setFinancingId(5);
+
+        Mockito.when(repository.findById(5)).thenReturn(existingFinancing);
+
+        service.updateFinancing(5, new BigDecimal("10000"), new BigDecimal("100000"), 360,
+                PropertyCondition.NEW, AmortizationType.PRICE, PropertyType.HOUSE,
+                3, 2, null, null, null, null, "Residential");
+
+        Mockito.verify(repository).updateFinancing(Mockito.any(RealEstateFinancing.class));
+        assertNull(service.getCurrentFinancing());
+    }
+
+    @Test
+    void updateFinancingMustThrowExceptionWhenNewDataIsInvalid() throws SQLException {
+        RealEstateFinancing existingFinancing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.APPROVED, 3, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        );
+        existingFinancing.setFinancingId(5);
+
+        Mockito.when(repository.findById(5)).thenReturn(existingFinancing);
+
+        assertThrows(IllegalArgumentException.class, () -> service.updateFinancing(
+                5, new BigDecimal("10000"), new BigDecimal("-100000"), 360,
+                PropertyCondition.NEW, AmortizationType.PRICE, PropertyType.HOUSE,
+                3, 2, null, null, null, null, "Residential"
+        ));
+    }
+
+    @Test
+    void validatePropertyTypeDataMustThrowExceptionWhenPropertyTypeIsHouseAndSpecificAttributesAreNotValid() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.REQUESTED, null, null, BigDecimal.valueOf(450.0),
+                2, true, BigDecimal.valueOf(1200), "Residential", 1
+        );
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.validatePropertyTypeData(financing));
+        assertEquals("Invalid data for property type HOUSE.", ex.getMessage());
+    }
+
+    @Test
+    void validatePropertyTypeDataMustThrowExceptionWhenPropertyTypeIsApartmentAndSpecificAttributesAreNotValid() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.APARTMENT, FinancingStatus.REQUESTED, null, null, BigDecimal.valueOf(450.0),
+                2, true, BigDecimal.valueOf(1200), "Residential", 1
+        );
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.validatePropertyTypeData(financing));
+        assertEquals("Invalid data for property type APARTMENT.", ex.getMessage());
+    }
+
+    @Test
+    void validatePropertyTypeDataMustThrowExceptionWhenPropertyTypeIsLandAndSpecificAttributesAreNotValid() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.LAND, FinancingStatus.REQUESTED, 2, 3, BigDecimal.valueOf(450.0),
+                2, true, BigDecimal.valueOf(1200), "Residential", 1
+        );
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.validatePropertyTypeData(financing));
+        assertEquals("Invalid data for property type LAND.", ex.getMessage());
+    }
+
+    @Test
+    void validatePropertyTypeDataMustNotThrowExceptionWhenPropertyTypeIsHouseAndSpecificAttributesAreValid() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.REQUESTED, null, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        );
+
+        assertDoesNotThrow(() -> service.validatePropertyTypeData(financing));
+    }
+
+    @Test
+    void validatePropertyTypeDataMustNotThrowExceptionWhenPropertyTypeIsApartmentAndSpecificAttributesAreValid() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.APARTMENT, FinancingStatus.REQUESTED, 2, 3, null,
+                2, true, BigDecimal.valueOf(1200), "Residential", 1
+        );
+
+        assertDoesNotThrow(() -> service.validatePropertyTypeData(financing));
+    }
+
+    @Test
+    void validatePropertyTypeDataMustNotThrowExceptionWhenPropertyTypeIsLandAndSpecificAttributesAreValid() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.LAND, FinancingStatus.REQUESTED, null, null, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        );
+
+        assertDoesNotThrow(() -> service.validatePropertyTypeData(financing));
+    }
+
+    @Test
+    void normalizePropertyTypeDataMustSetNullForSpecificInvalidAttributesIfPropertyTypeIsHouse() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.REQUESTED, 2, 3, BigDecimal.valueOf(450.0),
+                2, true, BigDecimal.valueOf(1200), "Residential", 1
+        );
+
+        service.normalizePropertyTypeData(financing);
+
+        assertNull(financing.getFloor());
+        assertNull(financing.hasElevator());
+        assertNull(financing.getCondominiumFee());
+        assertEquals(3, financing.getParkingSpaces());
+        assertEquals(2, financing.getBedrooms());
+        assertEquals(BigDecimal.valueOf(450.0), financing.getLandArea());
+    }
+    @Test
+    void normalizePropertyTypeDataMustSetNullForSpecificInvalidAttributesIfPropertyTypeIsApartment() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.APARTMENT, FinancingStatus.REQUESTED, 2, 3, BigDecimal.valueOf(450.0),
+                2, true, BigDecimal.valueOf(1200), "Residential", 1
+        );
+
+        service.normalizePropertyTypeData(financing);
+
+        assertNull(financing.getLandArea());
+        assertEquals(2, financing.getBedrooms());
+        assertEquals(3, financing.getParkingSpaces());
+        assertEquals(2, financing.getFloor());
+        assertEquals(true, financing.hasElevator());
+        assertEquals(BigDecimal.valueOf(1200), financing.getCondominiumFee());
+}
+    @Test
+    void normalizePropertyTypeDataMustSetNullForSpecificInvalidAttributesIfPropertyTypeIsLand() {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.LAND, FinancingStatus.REQUESTED, 2, 3, BigDecimal.valueOf(450.0),
+                2, true, BigDecimal.valueOf(1200), "Residential", 1
+        );
+
+        service.normalizePropertyTypeData(financing);
+
+        assertNull(financing.getParkingSpaces());
+        assertNull(financing.getFloor());
+        assertNull(financing.hasElevator());
+        assertNull(financing.getCondominiumFee());
+        assertNull(financing.getBedrooms());
+        assertEquals(BigDecimal.valueOf(450.0), financing.getLandArea());
+    }
+
+    @Test
+    void findAllFinancingsMustThrowFinancingNotFoundExceptionWhenNoFinancingsFound() throws SQLException {
+        List<RealEstateFinancing> financings = new ArrayList<>();
+        Mockito.when(repository.findAllByUser()).thenReturn(financings);
+
+        FinancingNotFoundException ex = assertThrows(FinancingNotFoundException.class, () -> service.findAllFinancings());
+        assertEquals("No financing records were found for this user.", ex.getMessage());
+    }
+
 }
