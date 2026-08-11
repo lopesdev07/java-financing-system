@@ -1,17 +1,17 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.5 BETA - 2026-08-10
+# Java financing system | v1.9.7 BETA - 2026-08-11
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.5 - 2026-08-10
+## Changelog - v1.9.7 - 2026-08-11
 ### Upgrades and Fixes:
 
-- fixed a bug in cancelFinancingMustThrowIllegalStateExceptionWhenUserIsNotAuthorized() where an authorized object was being used in the test, causing it to return an error.
+- Added 1 more test case in RealEstateFinancingServiceTest that was missing in the previous version, now the class is finished and fully covered with unit tests.
 
-- added 14 more test cases in RealEstateFinancingServiceTest, finishing the class.
----
+- Added the VehicleFinancingServiceTest class with 40 test cases on it, fully covering the VehicleFinancingServiceTest class.
 
+- Added @BeforeEach setUp() method in AuthServiceTest class to initialize the repository and service objects before each test case, ensuring a clean state for testing and better code organization/less repetition.
 ## Utilized Technologies
 - Java 24
 - IDE: IntelliJ
@@ -83,7 +83,6 @@ export DB_PASSWORD="your_password"**
 
 ## Next Steps
 
-- Add more unit tests with mockito for the service layer
 - Add Javadocs back for 2.0
 - Implement a proper logging framework 
 
