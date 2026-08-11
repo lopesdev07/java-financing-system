@@ -1,16 +1,15 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.5 BETA - 2026-08-09
+# Java financing system | v1.9.5 BETA - 2026-08-10
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.5 - 2026-08-09
+## Changelog - v1.9.5 - 2026-08-10
 ### Upgrades and Fixes:
 
-- Added 4 more test cases in RealEstateFinancingServiceTest for cancelFinancing method.
+- fixed a bug in cancelFinancingMustThrowIllegalStateExceptionWhenUserIsNotAuthorized() where an authorized object was being used in the test, causing it to return an error.
 
-- Added 3 more test cases in RealEstateFinancingServiceTest for saveCurrentFinancing method, testing all possible cases.
-
+- added 14 more test cases in RealEstateFinancingServiceTest, finishing the class.
 ---
 
 ## Utilized Technologies
