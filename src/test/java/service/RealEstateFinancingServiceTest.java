@@ -555,4 +555,18 @@ public class RealEstateFinancingServiceTest {
         assertEquals("No financing records were found for this user.", ex.getMessage());
     }
 
+    @Test
+    void findAllFinancingsMustReturnListOfFinancings() throws SQLException, FinancingNotFoundException {
+        List<RealEstateFinancing> financings = new ArrayList<>();
+        financings.add(new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.REQUESTED, 3, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        ));
+        Mockito.when(repository.findAllByUser()).thenReturn(financings);
+
+        List<RealEstateFinancing> result = service.findAllFinancings();
+        assertEquals(financings, result);
+    }
+
 }
