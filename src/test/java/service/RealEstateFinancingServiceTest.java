@@ -298,4 +298,20 @@ public class RealEstateFinancingServiceTest {
 
     }
 
+    @Test
+    void cancelFinancingMustUpdateFinancingStatusToCanceled() throws SQLException {
+        RealEstateFinancing financing = new RealEstateFinancing(
+                BigDecimal.valueOf(300000), 360, BigDecimal.valueOf(10.5), AmortizationType.PRICE,
+                PropertyType.HOUSE, FinancingStatus.APPROVED, 3, 2, BigDecimal.valueOf(450.0),
+                null, null, null, "Residential", 1
+        );
+        financing.setFinancingId(1);
+        Mockito.when(repository.findById(1)).thenReturn(financing);
+
+        service.cancelFinancing(1);
+
+
+        assertEquals(FinancingStatus.CANCELED, financing.getStatus());
+        Mockito.verify(repository).updateFinancingStatus(financing);
+    }
 }
