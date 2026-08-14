@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import exceptions.InvalidDownPaymentException;
 import exceptions.FinancingNotFoundException;
 import model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.RealEstateFinancingRepository;
 import util.AmortizationCalculator;
 
@@ -11,6 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class RealEstateFinancingService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RealEstateFinancingService.class);
 
     private final RealEstateFinancingRepository repository;
 
@@ -109,6 +113,9 @@ public class RealEstateFinancingService {
 
 
         AmortizationCalculator.calculateInstallments(currentFinancing);
+
+        logger.info("Real estate financing simulated for user {}: propertyType={}, status={}",
+                Session.getUserId(), propertyType, status);
     }
 
     public RealEstateFinancing getCurrentFinancing() {
@@ -124,6 +131,7 @@ public class RealEstateFinancingService {
         }
 
         repository.saveFinancing(currentFinancing);
+        logger.info("Real estate financing saved for user {}", Session.getUserId());
 
         currentFinancing = null;
     }
@@ -148,6 +156,7 @@ public class RealEstateFinancingService {
 
         existingFinancing.setFinancingStatus(FinancingStatus.CANCELED);
         repository.updateFinancingStatus(existingFinancing);
+        logger.info("Real estate financing {} canceled by user {}", financingId, Session.getUserId());
     }
 
     public void updateFinancing(Integer financingId, BigDecimal downPayment, BigDecimal propertyValue, int loanTermInMonths, PropertyCondition propertyCondition, AmortizationType amortizationType, PropertyType propertyType, Integer bedrooms, Integer parkingSpaces, BigDecimal landArea, Integer floor, Boolean elevator, BigDecimal condominiumFee, String zoning) throws SQLException, InvalidDownPaymentException {
@@ -159,7 +168,6 @@ public class RealEstateFinancingService {
         if (financingId == null)
             throw new IllegalArgumentException("Invalid financing ID.");
 
-        // old fin verifications
         RealEstateFinancing existingFinancing = repository.findById(financingId);
 
         if (existingFinancing == null)
@@ -171,11 +179,9 @@ public class RealEstateFinancingService {
         if (existingFinancing.getStatus() == FinancingStatus.CANCELED)
             throw new IllegalStateException("Canceled financings cannot be edited.");
 
-        // new fin verifications
         validateData(downPayment, propertyValue, loanTermInMonths, propertyCondition, amortizationType, propertyType);
         validateDownPayment(downPayment, propertyValue);
 
-        // new fin obj
         simulateFinancing(propertyValue, downPayment, loanTermInMonths, propertyCondition,
                 amortizationType, propertyType, parkingSpaces, bedrooms, landArea,
                 floor, elevator, condominiumFee, zoning);
@@ -185,6 +191,7 @@ public class RealEstateFinancingService {
 
         repository.updateFinancing(newFinancing);
         currentFinancing = null;
+        logger.info("Real estate financing {} updated by user {}", financingId, Session.getUserId());
     }
 
     public void validatePropertyTypeData(RealEstateFinancing financing) {
