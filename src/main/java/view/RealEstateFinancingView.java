@@ -66,10 +66,7 @@ public class RealEstateFinancingView {
             int financingID = ScannerUtil.intScanner(scanner);
             service.cancelFinancing(financingID);
             System.out.println("Financing canceled successfully!");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            logger.warn(e.getMessage());
-        } catch (IllegalStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
             logger.warn(e.getMessage());
         } catch (SQLException e) {
@@ -172,10 +169,7 @@ public class RealEstateFinancingView {
 
             System.out.println("Financing successfully edited!");
 
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            logger.warn(e.getMessage());
-        } catch (IllegalStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
             logger.warn(e.getMessage());
         } catch (SQLException e) {
@@ -193,11 +187,9 @@ public class RealEstateFinancingView {
             int financingID = ScannerUtil.intScanner(scanner);
             RealEstateFinancing financing = service.findFinancingById(financingID);
             System.out.println(financing.toString());}
-        catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException | IllegalStateException e) {
             System.out.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.out.println(e.getMessage());
-        }
+        } 
         catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
             logger.error("Database error", e);
@@ -290,13 +282,10 @@ public class RealEstateFinancingView {
         } catch (InvalidDownPaymentException e) {
             System.out.println("Error: " + e.getMessage());
             logger.warn(e.getMessage());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
             logger.warn(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.out.println("Error: " + e.getMessage());
-            logger.warn(e.getMessage());
-        }
+        } 
         return false;
     }
 
