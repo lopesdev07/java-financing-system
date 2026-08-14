@@ -1,17 +1,23 @@
 # sistema-de-financiamentos-Java
 
-# Java financing system | v1.9.7 BETA - 2026-08-11
+# Java financing system | v1.9.8 BETA - 2026-08-13
 
 **Description:** Financing application developed in Java for practice on backend development. Implements login/register system, alongside with different types of financings that can be manipulated through add and edit methods and viewed so the user can analyze his own financing. All data are manipulated and stored in SQL/MySQL utilizing JDBC.
 
-## Changelog - v1.9.7 - 2026-08-11
+## Changelog - v1.9.8 - 2026-08-13
 ### Upgrades and Fixes:
+Added MIT License to the project.
 
-- Added 1 more test case in RealEstateFinancingServiceTest that was missing in the previous version, now the class is finished and fully covered with unit tests.
+Added logback.xml file to the project to set up console and file logging.
 
-- Added the VehicleFinancingServiceTest class with 40 test cases on it, fully covering the VehicleFinancingServiceTest class.
+Added SLF4J + Logback dependencies on pom.xml
 
-- Added @BeforeEach setUp() method in AuthServiceTest class to initialize the repository and service objects before each test case, ensuring a clean state for testing and better code organization/less repetition.
+Added logs/ to .gitignore to never commit any log files
+
+Added logs in AuthService, RealEStateFinancingService, VehicleFinancingService, AuthView, RealEstateFinancingview, VehicleFinancingView
+
+Added an adjust in logback.xml to not show the log messages in the console (2026-08-14)
+
 ## Utilized Technologies
 - Java 24
 - IDE: IntelliJ
