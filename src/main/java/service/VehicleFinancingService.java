@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import exceptions.InvalidVehicleDownPaymentException;
 import exceptions.FinancingNotFoundException;
 import model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.VehicleFinancingRepository;
 import util.AmortizationCalculator;
 
@@ -11,6 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class VehicleFinancingService {
+
+    private static final Logger logger = LoggerFactory.getLogger(VehicleFinancingService.class);
 
     private static final int MAX_LOAN_TERM_MONTHS = 60;
 
@@ -62,6 +66,7 @@ public class VehicleFinancingService {
 
         existingFinancing.setFinancingStatus(FinancingStatus.CANCELED);
         repository.updateFinancingStatus(existingFinancing);
+        logger.info("Vehicle financing {} canceled by user {}", financingId, Session.getUserId());
     }
 
     private void validateData(BigDecimal downPayment, BigDecimal vehicleValue, int loanTermInMonths,
@@ -126,6 +131,9 @@ public class VehicleFinancingService {
         validateVehicleConditionData(currentFinancing);
 
         AmortizationCalculator.calculateInstallments(currentFinancing);
+
+        logger.info("Vehicle financing simulated for user {}: vehicleType={}, status={}",
+                Session.getUserId(), vehicleType, status);
     }
 
     public VehicleFinancing getCurrentFinancing() {
@@ -141,6 +149,7 @@ public class VehicleFinancingService {
         }
 
         repository.saveFinancing(currentFinancing);
+        logger.info("Vehicle financing saved for user {}", Session.getUserId());
 
         currentFinancing = null;
     }
@@ -156,7 +165,6 @@ public class VehicleFinancingService {
         if (financingId == null)
             throw new IllegalArgumentException("Invalid financing ID.");
 
-        // old fin verifications
         VehicleFinancing existingFinancing = repository.findById(financingId);
 
         if (existingFinancing == null)
@@ -168,11 +176,9 @@ public class VehicleFinancingService {
         if (existingFinancing.getStatus() == FinancingStatus.CANCELED)
             throw new IllegalStateException("Canceled financings cannot be edited.");
 
-        // new fin verifications
         validateData(downPayment, vehicleValue, loanTermInMonths, vehicleCondition, amortizationType, vehicleType);
         validateDownPayment(downPayment, vehicleValue);
 
-        // new fin obj
         simulateFinancing(vehicleValue, downPayment, loanTermInMonths, vehicleCondition,
                 amortizationType, vehicleType, brand, model, manufactureYear, mileage);
 
@@ -181,6 +187,7 @@ public class VehicleFinancingService {
 
         repository.updateFinancing(newFinancing);
         currentFinancing = null;
+        logger.info("Vehicle financing {} updated by user {}", financingId, Session.getUserId());
     }
 
     public void validateVehicleConditionData(VehicleFinancing financing) {
