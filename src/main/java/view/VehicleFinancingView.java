@@ -3,6 +3,8 @@ package view;
 import exceptions.InvalidVehicleDownPaymentException;
 import exceptions.FinancingNotFoundException;
 import model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.VehicleFinancingService;
 import util.LoopUtil;
 import util.ScannerUtil;
@@ -12,6 +14,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class VehicleFinancingView {
+
+    private static final Logger logger = LoggerFactory.getLogger(VehicleFinancingView.class);
+
     private final VehicleFinancingService service;
 
     public VehicleFinancingView(VehicleFinancingService service) {
@@ -63,10 +68,13 @@ public class VehicleFinancingView {
             System.out.println("Financing canceled successfully!");
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         }
     }
 
@@ -98,6 +106,7 @@ public class VehicleFinancingView {
             System.out.println(e.getMessage());
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         }
     }
 
@@ -144,12 +153,16 @@ public class VehicleFinancingView {
 
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         } catch (InvalidVehicleDownPaymentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         }
     }
 
@@ -165,6 +178,7 @@ public class VehicleFinancingView {
             System.out.println(e.getMessage());
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         }
     }
 
@@ -189,8 +203,10 @@ public class VehicleFinancingView {
             }
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         }
     }
 
@@ -231,10 +247,13 @@ public class VehicleFinancingView {
             return true;
         } catch (InvalidVehicleDownPaymentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         }
         return false;
     }
