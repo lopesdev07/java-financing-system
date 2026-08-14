@@ -2,10 +2,15 @@ package service;
 
 import exceptions.*;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.AuthRepository;
 import java.sql.SQLException;
 
 public class AuthService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
     private final AuthRepository authRepository;
 
     public AuthService(AuthRepository authRepository) {
@@ -35,8 +40,10 @@ public class AuthService {
             }
 
             Session.login(user.getUserId());
+            logger.info("User {} logged in successfully", user.getUserId());
 
         } catch (UserNotFoundException | InvalidPasswordException e) {
+            logger.warn("Failed login attempt for CPF {}", cpf);
             throw new AuthenticationFailedException();
         }
     }
@@ -58,5 +65,6 @@ public class AuthService {
         user.setPasswordHash(hash);
 
         authRepository.saveUser(user);
-
-    }}
+        logger.info("New user registered: {}", user.getUserId());
+    }
+}
