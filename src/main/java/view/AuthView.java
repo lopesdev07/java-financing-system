@@ -4,12 +4,17 @@ import exceptions.AuthenticationFailedException;
 import exceptions.CpfAlreadyRegisteredException;
 import exceptions.InvalidCpfException;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.AuthService;
 import util.ScannerUtil;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class AuthView {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthView.class);
+
     private final AuthService service;
     public AuthView(AuthService service) {
         this.service = service;
@@ -50,14 +55,17 @@ public class AuthView {
 
         }
         catch (InvalidCpfException e) {
+            logger.warn(e.getMessage());
             System.out.println(e.getMessage());
             return false;
         }
         catch (SQLException e) {
+            logger.error("Database error", e);
             System.err.println("Error accessing the database. Please try again.");
             return false;
         }
         catch (AuthenticationFailedException e) {
+            logger.warn(e.getMessage());
             System.out.println(e.getMessage());
             return false;
         }
@@ -81,10 +89,13 @@ public class AuthView {
                 System.out.println("Registration successful! You can now log in.");
                 registered = true;
             } catch (CpfAlreadyRegisteredException e) {
+                logger.warn(e.getMessage());
                 System.out.println(e.getMessage());
             } catch (InvalidCpfException e) {
+                logger.warn(e.getMessage());
                 System.out.println(e.getMessage());
             } catch (SQLException e) {
+                logger.error("Database error", e);
                 System.err.println("Error accessing the database. Please try again.");
             }
         }}
