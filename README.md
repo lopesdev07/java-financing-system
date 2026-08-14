@@ -89,10 +89,8 @@ export DB_PASSWORD="your_password"**
 
 ## Next Steps
 
-- Add Javadocs back for 2.0
-- Implement a proper logging framework 
+- Use multi-catch (`|`) in views where `IllegalArgumentException`/`IllegalStateException` share the same catch body
 
 **Other:**
-- Add a LICENSE file
-- Use multi-catch (`|`) in views where `IllegalArgumentException`/`IllegalStateException` share the same catch body
+
 - Total migration of the project to Spring Boot
