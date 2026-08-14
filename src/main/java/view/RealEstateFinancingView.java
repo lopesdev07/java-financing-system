@@ -3,6 +3,8 @@ package view;
 import exceptions.InvalidDownPaymentException;
 import exceptions.FinancingNotFoundException;
 import model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.RealEstateFinancingService;
 import util.LoopUtil;
 import util.ScannerUtil;
@@ -12,6 +14,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class RealEstateFinancingView {
+
+    private static final Logger logger = LoggerFactory.getLogger(RealEstateFinancingView.class);
+
     private final RealEstateFinancingService service;
 
     public RealEstateFinancingView(RealEstateFinancingService service) {
@@ -63,10 +68,13 @@ public class RealEstateFinancingView {
             System.out.println("Financing canceled successfully!");
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         }
     }
 
@@ -98,6 +106,7 @@ public class RealEstateFinancingView {
             System.out.println(e.getMessage());
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         }
     }
 
@@ -165,21 +174,25 @@ public class RealEstateFinancingView {
 
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         } catch (InvalidDownPaymentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         }
     }
 
     private void viewRealEstateFinancingDetails(Scanner scanner) {
         try {
-        System.out.print("Type the ID of the financing you want to see details for: ");
-        int financingID = ScannerUtil.intScanner(scanner);
-        RealEstateFinancing financing = service.findFinancingById(financingID);
-        System.out.println(financing.toString());}
+            System.out.print("Type the ID of the financing you want to see details for: ");
+            int financingID = ScannerUtil.intScanner(scanner);
+            RealEstateFinancing financing = service.findFinancingById(financingID);
+            System.out.println(financing.toString());}
         catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         } catch (IllegalStateException e) {
@@ -187,6 +200,7 @@ public class RealEstateFinancingView {
         }
         catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         }}
 
     private void simulationMenu(Scanner scanner) {
@@ -209,8 +223,10 @@ public class RealEstateFinancingView {
             }
         } catch (SQLException e) {
             System.out.println("Error: an error occurred with the database. Please try again.");
+            logger.error("Database error", e);
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         }
     }
 
@@ -273,10 +289,13 @@ public class RealEstateFinancingView {
             return true;
         } catch (InvalidDownPaymentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
+            logger.warn(e.getMessage());
         }
         return false;
     }
