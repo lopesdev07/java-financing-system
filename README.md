@@ -1,6 +1,6 @@
 # sistema-de-financiamentos-Java
 
-![CI](https://github.com/lopesdev07/sistema-de-financiamentos-Java/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/lopesdev07/java-financing-system/actions/workflows/ci.yml/badge.svg)
 
 # Java Financing System | v2.0 - 2026-08-15
 
@@ -28,7 +28,7 @@ The financing-creation flow in the console menus had a control-flow bug: creatio
 ---
 
 ## Project Structure
-**sistema-de-financiamentos-Java/**
+**java-financing-system/**
 
 **database** → schema.sql
 
@@ -105,7 +105,7 @@ export DB_PASSWORD="your_password"
 
 1. **Clone this repository**
 ```bash
-   git clone https://github.com/lopesdev07/sistema-de-financiamentos-Java
+   git clone https://github.com/lopesdev07/java-financing-system
 ```
 2. **Open the project**
    Open the project in your IDE (e.g., IntelliJ)
