@@ -1,4 +1,4 @@
-# sistema-de-financiamentos-Java
+# java-financing-system
 
 ![CI](https://github.com/lopesdev07/java-financing-system/actions/workflows/ci.yml/badge.svg)
 
